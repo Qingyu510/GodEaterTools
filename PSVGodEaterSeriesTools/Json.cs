@@ -12,7 +12,7 @@ public class ResList
 {
     [JsonPropertyName("Filename")] public string Filename { get; set; }
     [JsonPropertyName("Magic")] public long Magic { get; set; }
-    [JsonPropertyName("Format")] public int Format { get; set; }
+    [JsonPropertyName("GroupsCount")] public int GroupsCount { get; set; }
     [JsonPropertyName("Version")] public int Version { get; set; }
     [JsonPropertyName("package")] public int Package { get; set; }
     [JsonPropertyName("Sign")] public int Sign { get; set; }

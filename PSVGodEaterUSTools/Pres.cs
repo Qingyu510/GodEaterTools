@@ -617,7 +617,7 @@ otype = TypeRes;
         byte[] head = new byte[0x60];
         WriteU32At(head, 0, (uint)js.Magic);
         WriteU32At(head, 4, (uint)grupOff);
-        head[8] = (byte)js.Format;
+        head[8] = (byte)js.GroupsCount;
         head[9] = (byte)js.Version;
         head[0x0A] = (byte)(js.Package & 0xFF);
         head[0x0B] = (byte)((js.Package >> 8) & 0xFF);
@@ -1031,7 +1031,7 @@ otype = TypeRes;
         var head = new byte[headSize];
         WriteU32At(head, 0, (uint)js.Magic);
         WriteU32At(head, 4, 0);                                // ★ 美版：+0x04 废弃置 0
-        head[8] = (byte)js.Format; head[9] = (byte)js.Version;
+        head[8] = (byte)js.GroupsCount; head[9] = (byte)js.Version;
         head[0x0A] = (byte)(js.Package & 0xFF); head[0x0B] = (byte)((js.Package >> 8) & 0xFF);
         WriteU32At(head, 0x0C, (uint)(js.Sign & 3));
         WriteU32At(head, 0x10, (uint)pkgSize);

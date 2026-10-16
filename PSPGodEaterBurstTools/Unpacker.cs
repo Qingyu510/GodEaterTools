@@ -105,7 +105,7 @@ public static class Unpacker
         {
             Filename = ".\\" + resName,
             Magic = Pres.U32(data, 0),
-            Format = data[8],
+            GroupsCount = data[8],
             Version = data[9],
             Package = Pres.U16(data, 0x0A),
             Sign = (int)(raw0c & 3),

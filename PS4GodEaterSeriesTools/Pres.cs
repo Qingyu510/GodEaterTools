@@ -41,7 +41,7 @@ public readonly struct BaseRef
 /// PS4 GOD EATER 系列 PRES(.res) 格式。
 /// ★ 与 PSV 的根本差异：所有指针 / 数值都是【8 字节槽存 4 字节值】（高 4 字节恒 0），
 ///   于是 TOC 条目 0x20 → 0x40、组表每组 8 → 16 字节、字段偏移整体外移。
-/// 物理布局：固定头 0x30（magic@+0x00 / groupOff@+0x08 / Format|Version|PackageId@+0x10 /
+/// 物理布局：固定头 0x30（magic@+0x00 / groupOff@+0x08 / GroupsCount|Version|PackageId@+0x10 /
 ///           Sign@+0x14 / pkgSize@+0x18 / baseRef@+0x20 / baseSize@+0x28）+
 ///           组表 8×16(@0x30) + TOC(n×0x40, @0xB0) +
 ///           按 TOC 顺序逐条 [16 对齐数据][16 对齐名字区]（16 对齐收尾）+
@@ -566,7 +566,7 @@ otype = TypeRes;
         byte[] head = new byte[0xB0];                 // ★ PS4：头 0x30 + 组表 8×16 = TOC 起 0xB0
         WriteU32At(head, 0x00, (uint)js.Magic);
         WriteU32At(head, 0x08, (uint)grupOff);
-        head[0x10] = (byte)js.Format;                 // ★ PS4：Format / Version / PackageId 挤在 +0x10 的 8 字节槽里
+        head[0x10] = (byte)js.GroupsCount;                 // ★ PS4：GroupsCount / Version / PackageId 挤在 +0x10 的 8 字节槽里
         head[0x11] = (byte)js.Version;
         head[0x12] = (byte)(js.Package & 0xFF);
         head[0x13] = (byte)((js.Package >> 8) & 0xFF);

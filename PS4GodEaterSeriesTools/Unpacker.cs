@@ -288,7 +288,7 @@ public static class Unpacker
         {
             Filename = ".\\" + resName,
             Magic = Pres.U32(data, 0x00),
-            Format = data[0x10],                          // ★ PS4：Format / Version / PackageId 在 +0x10
+            GroupsCount = data[0x10],                          // ★ PS4：GroupsCount / Version / PackageId 在 +0x10
             Version = data[0x11],
             Package = Pres.U16(data, 0x12),
             Sign = (int)(raw0c & 3),
