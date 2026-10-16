@@ -95,6 +95,17 @@ dotnet build PSPGodEaterTools -c Release
 - **rtbl 重打包**：`*.rtbl`（res 组 7 引用的 rdp 引用表，每 `0x200` 一槽）用固定槽位清单现场重建，
   逐槽回填该 res 在新 rdp 上的块号 / 大小。
 
+### 文档
+
+`docs/` 目录收录两份格式说明（Markdown）：
+
+| 文件 | 内容 |
+|---|---|
+| `docs/res-容器格式说明.md` | `res` 容器结构：头部字段、组与 TOC、名字区、rdp 编址、版本谱系、更新补丁、DLC 三平台形态、美版多语言分区 |
+| `docs/res-压缩段说明.md` | gzip / dflt / blz2 / blz4 四种压缩段的段结构、分块与写盘算法、解压流程与实测统计 |
+
+两份文档按 Wiki 页面惯例排版。待本仓库公开后，将转为仓库 Wiki 页面展示。
+
 ---
 
 ## English
@@ -182,3 +193,14 @@ Typical workflow: run `-x` to unpack into `1.out/`, copy only what you changed i
 - **Shift-on-write**: `package.rdp` and `data.rdp` are each rewritten in full, in ascending block order. Each entry occupies `max(new block count, original block count)` — shrinking does not reclaim space (zero-filled) so positions stay stable; only genuinely larger entries expand in place and push the following entries back.
 - **Recursive re-packing**: any list entry whose data is itself a res (rdp-side child res as well as local-embedded res) is first rebuilt in place from its own list (output to `3.temp/`) and re-embedded at its original position inside the parent res — editing a file inside an embedded res updates the parent res automatically.
 - **rtbl re-packing**: `*.rtbl` files (rdp reference tables referenced by res group 7, one slot per `0x200` bytes) are rebuilt from their fixed slot list, back-filling each slot with the entry's block number/size in the new rdp.
+
+### Documentation
+
+The `docs/` directory contains two format references (Markdown):
+
+| File | Contents |
+|---|---|
+| `docs/res-容器格式说明.md` | `res` container layout: header fields, groups & TOC, name area, rdp addressing, version lineage, update patches, DLC forms on three platforms, US multi-language partitions |
+| `docs/res-压缩段说明.md` | the four compressed segment formats (gzip / dflt / blz2 / blz4): segment structure, chunking & write-order algorithms, decompression flow, and measured statistics |
+
+Both documents are laid out wiki-style. Once this repository is made public, they will be published as repository Wiki pages.
