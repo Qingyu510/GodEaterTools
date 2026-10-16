@@ -15,10 +15,10 @@
 | `PSPGodEaterTools` | PSP | GOD EATER | 无 |
 | `PSPGodEaterBurstTools` | PSP | GOD EATER BURST | gzip |
 | `PSPGodEaterCheckerTools` | PSP | GOD EATER BURST GE2 引继数据检查器 | deflate |
-| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体验版 | blz2 |
-| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体验版 | blz2 |
-| `PSPGodEater2Tools` | PSP | GOD EATER 2 | blz2 |
-| `PSVGodEater2Tools` | PSV | GOD EATER 2 | blz2 |
+| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体験版 | 无 |
+| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体験版 | 无 |
+| `PSPGodEater2Tools` | PSP | GOD EATER 2 序盤まるごと体験版 / GOD EATER 2 | blz2 |
+| `PSVGodEater2Tools` | PSV | GOD EATER 2 序盤まるごと体験版 / GOD EATER 2 | blz2 |
 | `PSVGodEaterSeriesTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION / OFF SHOT 系列 | blz4 |
 | `PS4GodEaterSeriesTools` | PS4 | 同上（PS4 版） | blz4 |
 | `PSVGodEaterUSTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION 美版（多语言分区） | blz4 |
@@ -110,10 +110,10 @@ Each subdirectory is a standalone tool with no cross-project dependencies.
 | `PSPGodEaterTools` | PSP | GOD EATER | none |
 | `PSPGodEaterBurstTools` | PSP | GOD EATER BURST | gzip |
 | `PSPGodEaterCheckerTools` | PSP | GOD EATER BURST GE2 transfer-data checker | deflate |
-| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 trial | blz2 |
-| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 trial | blz2 |
-| `PSPGodEater2Tools` | PSP | GOD EATER 2 | blz2 |
-| `PSVGodEater2Tools` | PSV | GOD EATER 2 | blz2 |
+| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体験版 (trial) | none |
+| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体験版 (trial) | none |
+| `PSPGodEater2Tools` | PSP | GOD EATER 2 序盤まるごと体験版 (prologue trial) / GOD EATER 2 | blz2 |
+| `PSVGodEater2Tools` | PSV | GOD EATER 2 序盤まるごと体験版 (prologue trial) / GOD EATER 2 | blz2 |
 | `PSVGodEaterSeriesTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION / OFF SHOT | blz4 |
 | `PS4GodEaterSeriesTools` | PS4 | same as above (PS4 builds) | blz4 |
 | `PSVGodEaterUSTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION US (multi-language partitions) | blz4 |
