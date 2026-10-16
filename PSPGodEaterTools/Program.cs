@@ -139,7 +139,7 @@ static class Program
 适用游戏
   NPJH90069：GOD EATER 体験版（数字版）
   ULJM91019：GOD EATER 体験版（UMD版）
-  ULJS00237：噬神者
+  ULJS00237：GOD EATER
 
 用法
   PSPGodEaterTools -x                 解包当前目录的 system.res + package.rdp

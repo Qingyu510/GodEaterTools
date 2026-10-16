@@ -10,18 +10,18 @@
 
 ### 工具一览
 
-| 目录 | 平台 | 对应作品 | 压缩格式 |
-|---|---|---|---|
-| `PSPGodEaterTools` | PSP | GOD EATER | 无 |
-| `PSPGodEaterBurstTools` | PSP | GOD EATER BURST | gzip |
-| `PSPGodEaterCheckerTools` | PSP | GOD EATER BURST GE2 引继数据检查器 | deflate |
-| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体験版 | 无 |
-| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体験版 | 无 |
-| `PSPGodEater2Tools` | PSP | GOD EATER 2 序盤まるごと体験版 / GOD EATER 2 | blz2 |
-| `PSVGodEater2Tools` | PSV | GOD EATER 2 序盤まるごと体験版 / GOD EATER 2 | blz2 |
-| `PSVGodEaterSeriesTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION / OFF SHOT 系列 | blz4 |
-| `PS4GodEaterSeriesTools` | PS4 | 同上（PS4 版） | blz4 |
-| `PSVGodEaterUSTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION 美版（多语言分区） | blz4 |
+| 目录 | 平台 | 对应作品 | 游戏ID | 压缩格式 |
+|---|---|---|---|---|
+| `PSPGodEaterTools` | PSP | GOD EATER | NPJH90069、ULJM91019、ULJS00237 | 无 |
+| `PSPGodEaterBurstTools` | PSP | GOD EATER BURST | NPJH90167、NPJH50352、ULJS00350、ULUS10563、ULES01519 | gzip |
+| `PSPGodEaterCheckerTools` | PSP | GOD EATER BURST GE2 引继数据检查器 | NPJH00134 | deflate |
+| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体験版 | NPJH90338 | 无 |
+| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体験版 | PCSG90094 | 无 |
+| `PSPGodEater2Tools` | PSP | GOD EATER 2 序盤まるごと体験版 / GOD EATER 2 | NPJH90342、NPJH50832 | blz2 |
+| `PSVGodEater2Tools` | PSV | GOD EATER 2 序盤まるごと体験版 / GOD EATER 2 | PCSG90106、PCSG00240 | blz2 |
+| `PSVGodEaterSeriesTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION / OFF SHOT 系列 | PCSG90161、PCSG00532、PCSG90193、PCSG00719、PCSG00720、PCSG00721、PCSG00722、PCSG00723、PCSG00724、PCSG00725、PCSH00144、PCSH00133、PCSH00212、PCSH00199 | blz4 |
+| `PS4GodEaterSeriesTools` | PS4 | 同上（PS4 版） | CUSA01787、CUSA01516、CUSA03592、CUSA03105、CUSA03118、CUSA03119、CUSA03120、CUSA03121、CUSA03122、CUSA03123、CUSA01838、CUSA01714、CUSA03703、CUSA03409 | blz4 |
+| `PSVGodEaterUSTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION 美版（多语言分区） | PCSB00875、PCSE00789、PCSB00874、PCSE00801 | blz4 |
 
 各工具支持的 title id 详见其 `-h` 输出的「适用游戏」段。
 
@@ -105,18 +105,18 @@ Each subdirectory is a standalone tool with no cross-project dependencies.
 
 ### Tools
 
-| Directory | Platform | Titles | Compression |
-|---|---|---|---|
-| `PSPGodEaterTools` | PSP | GOD EATER | none |
-| `PSPGodEaterBurstTools` | PSP | GOD EATER BURST | gzip |
-| `PSPGodEaterCheckerTools` | PSP | GOD EATER BURST GE2 transfer-data checker | deflate |
-| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体験版 (trial) | none |
-| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体験版 (trial) | none |
-| `PSPGodEater2Tools` | PSP | GOD EATER 2 序盤まるごと体験版 (prologue trial) / GOD EATER 2 | blz2 |
-| `PSVGodEater2Tools` | PSV | GOD EATER 2 序盤まるごと体験版 (prologue trial) / GOD EATER 2 | blz2 |
-| `PSVGodEaterSeriesTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION / OFF SHOT | blz4 |
-| `PS4GodEaterSeriesTools` | PS4 | same as above (PS4 builds) | blz4 |
-| `PSVGodEaterUSTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION US (multi-language partitions) | blz4 |
+| Directory | Platform | Titles | Game ID | Compression |
+|---|---|---|---|---|
+| `PSPGodEaterTools` | PSP | GOD EATER | NPJH90069, ULJM91019, ULJS00237 | none |
+| `PSPGodEaterBurstTools` | PSP | GOD EATER BURST | NPJH90167, NPJH50352, ULJS00350, ULUS10563, ULES01519 | gzip |
+| `PSPGodEaterCheckerTools` | PSP | GOD EATER BURST GE2 transfer-data checker | NPJH00134 | deflate |
+| `PSPGodEater2TrialTools` | PSP | GOD EATER 2 体験版 (trial) | NPJH90338 | none |
+| `PSVGodEater2TrialTools` | PSV | GOD EATER 2 体験版 (trial) | PCSG90094 | none |
+| `PSPGodEater2Tools` | PSP | GOD EATER 2 序盤まるごと体験版 (prologue trial) / GOD EATER 2 | NPJH90342, NPJH50832 | blz2 |
+| `PSVGodEater2Tools` | PSV | GOD EATER 2 序盤まるごと体験版 (prologue trial) / GOD EATER 2 | PCSG90106, PCSG00240 | blz2 |
+| `PSVGodEaterSeriesTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION / OFF SHOT | PCSG90161, PCSG00532, PCSG90193, PCSG00719, PCSG00720, PCSG00721, PCSG00722, PCSG00723, PCSG00724, PCSG00725, PCSH00144, PCSH00133, PCSH00212, PCSH00199 | blz4 |
+| `PS4GodEaterSeriesTools` | PS4 | same as above (PS4 builds) | CUSA01787, CUSA01516, CUSA03592, CUSA03105, CUSA03118, CUSA03119, CUSA03120, CUSA03121, CUSA03122, CUSA03123, CUSA01838, CUSA01714, CUSA03703, CUSA03409 | blz4 |
+| `PSVGodEaterUSTools` | PSV | GOD EATER 2 RAGE BURST / RESURRECTION US (multi-language partitions) | PCSB00875, PCSE00789, PCSB00874, PCSE00801 | blz4 |
 
 Supported title ids are listed in each tool's `-h` output.
 
