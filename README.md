@@ -106,6 +106,14 @@ dotnet build PSPGodEaterTools -c Release
 
 两份文档按 Wiki 页面惯例排版。待本仓库公开后，将转为仓库 Wiki 页面展示。
 
+### 许可证
+
+本项目以 **GNU General Public License v3.0（GPL-3.0）** 开源，版权归 © 2026 Qingyu510。你可以自由使用、修改与再分发（含商业用途），但**衍生作品必须同样以 GPL-3.0 授权并公开完整对应源码**，同时须保留版权声明与许可声明。全文见 [`LICENSE`](LICENSE)。
+
+仓库内分发 `zlib1.dll`（zlib 许可），并在格式研究上参考了 MIT 许可的 GEBCS —— 两者均与 GPL-3.0 兼容，原始声明见 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)。
+
+> 本仓库只包含工具源码与格式说明文档，不含任何游戏资源。《GOD EATER》系列名称、商标及其资源版权归 BANDAI NAMCO Entertainment Inc. 所有。
+
 ---
 
 ## English
@@ -204,3 +212,11 @@ The `docs/` directory contains two format references (Markdown):
 | `docs/res-压缩段说明.md` | the four compressed segment formats (gzip / dflt / blz2 / blz4): segment structure, chunking & write-order algorithms, decompression flow, and measured statistics |
 
 Both documents are laid out wiki-style. Once this repository is made public, they will be published as repository Wiki pages.
+
+### License
+
+Released under the **GNU General Public License v3.0 (GPL-3.0)**, © 2026 Qingyu510. You are free to use, modify and redistribute it, including commercially, but **derivative works must also be licensed under GPL-3.0 with complete corresponding source code made available**, and the copyright and license notices must be retained — see [`LICENSE`](LICENSE).
+
+`zlib1.dll` (zlib license) is distributed with the tools, and this project references the MIT-licensed GEBCS — both are compatible with GPL-3.0; see [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) for the original notices.
+
+> This repository contains tool source code and format documentation only, no game assets. *GOD EATER* and all related names, trademarks and assets are property of BANDAI NAMCO Entertainment Inc.
