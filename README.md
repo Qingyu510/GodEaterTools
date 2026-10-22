@@ -97,14 +97,15 @@ dotnet build PSPGodEaterTools -c Release
 
 ### 文档
 
-`docs/` 目录收录两份格式说明（Markdown）：
+`docs/` 目录收录三份格式说明（Markdown）：
 
 | 文件 | 内容 |
 |---|---|
 | `docs/res-容器格式说明.md` | `res` 容器结构：头部字段、组与 TOC、名字区、rdp 编址、版本谱系、更新补丁、DLC 三平台形态、美版多语言分区 |
 | `docs/res-压缩段说明.md` | gzip / dflt / blz2 / blz4 四种压缩段的段结构、分块与写盘算法、解压流程与实测统计 |
+| `docs/executable-text-illustrated.md` | 可执行文件侧的文本翻译：`EBOOT.BIN` / `eboot.bin` 与 `prx` / `sprx` / `suprx` / `self` 里 UTF-8 文本的排布、指针槽与指令内硬编码地址的定位和改写，含 PSP 专有的 `PATCH.EDAT` 大小校验 |
 
-两份文档按 Wiki 页面惯例排版。待本仓库公开后，将转为仓库 Wiki 页面展示。
+三份文档按 Wiki 页面惯例排版。待本仓库公开后，将转为仓库 Wiki 页面展示。
 
 ### 许可证
 
@@ -204,14 +205,15 @@ Typical workflow: run `-x` to unpack into `1.out/`, copy only what you changed i
 
 ### Documentation
 
-The `docs/` directory contains two format references (Markdown):
+The `docs/` directory contains three format references (Markdown):
 
 | File | Contents |
 |---|---|
 | `docs/res-容器格式说明.md` | `res` container layout: header fields, groups & TOC, name area, rdp addressing, version lineage, update patches, DLC forms on three platforms, US multi-language partitions |
 | `docs/res-压缩段说明.md` | the four compressed segment formats (gzip / dflt / blz2 / blz4): segment structure, chunking & write-order algorithms, decompression flow, and measured statistics |
+| `docs/executable-text-illustrated.md` | text translation on the executable side: how UTF-8 strings are laid out in `EBOOT.BIN` / `eboot.bin` and the `prx` / `sprx` / `suprx` / `self` modules, and how to locate and rewrite pointer slots and hard-coded addresses inside instructions — including the PSP-only `PATCH.EDAT` size check |
 
-Both documents are laid out wiki-style. Once this repository is made public, they will be published as repository Wiki pages.
+All three documents are laid out wiki-style. Once this repository is made public, they will be published as repository Wiki pages.
 
 ### License
 
