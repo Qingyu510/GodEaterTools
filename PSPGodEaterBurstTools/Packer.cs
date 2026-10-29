@@ -75,27 +75,40 @@ public static class Packer
 
         // 顺移模式的【布局预案】：每条占 max(新块数, 原块数) —— 变小不回收，
         //   于是「没变大的条目」位置完全不动，只有真正变大的条目会把它之后的条目整体后移；
-        //   条目之间的空隙也原样保留。非 res 的新长度取文件大小；res 先按原块数占位
-        //   （若它实际变长跨块，写入阶段直接报错，以免写出坏包）。
-        var planBlock = new Dictionary<PackageEntry, (long dst, long occupy, long len)>();
+        //   条目之间的空隙也原样保留。
+        // 非 res 的新长度取文件大小（精确）；res 的长度只有重打包之后才知道，先按原长度占位。
+        //   ★ DLC 的 rdp 块只有 0x10 字节，res 重打包哪怕只多 1 字节也会多占一块 ⇒
+        //   「按原块数占位」必然可能失准。因此构建阶段一旦发现某 res 超出占位，就用【实测长度】
+        //   重排一次再构建：res 的长度只由它的内部条目与名字区决定，与它在 rdp 里的块位无关，
+        //   所以重排后的第二遍即为精确解（见下方 attempt 循环）。
+        var resLen = new Dictionary<PackageEntry, long>();        // res → 实测长度（重排依据）
+        Dictionary<PackageEntry, (long dst, long occupy, long len)> planBlock;
         long reflowBlocks = 0;
+
+        (Dictionary<PackageEntry, (long dst, long occupy, long len)> plan, long blocks)
+            PlanLayout(Dictionary<PackageEntry, long> known)
         {
+            var plan = new Dictionary<PackageEntry, (long dst, long occupy, long len)>(pkg.Entries.Count);
             long pc = 0, psEnd = 0;
             foreach (var e in pkg.Entries.OrderBy(x => x.Block))
             {
                 if (e.Block > psEnd) pc += e.Block - psEnd;           // 空隙照搬
-                long len = e.IsRes ? e.Size : FileLen(e.ExportPath);
+                long len = e.IsRes
+                         ? (known != null && known.TryGetValue(e, out var rl) ? rl : e.Size)
+                         : FileLen(e.ExportPath);
                 long occupy = Math.Max(NBlk(len), NBlk(e.Size));
-                planBlock[e] = (pc, occupy, len);
+                plan[e] = (pc, occupy, len);
                 pc += occupy;
                 psEnd = e.Block + NBlk(e.Size);
             }
-            reflowBlocks = pc + (totalBlocks > psEnd ? totalBlocks - psEnd : 0);
-            Console.WriteLine($"  预案  : {planBlock.Count} 条 → {reflowBlocks} 块（原 {totalBlocks} 块）");
-            // 注意：预案只定【块位】。loc 表（父 res 记录子里填的 offset/size）必须用
-            //   构建阶段的【真实写入长度】登记 —— 压缩条目重 gzip 后长度会变（实测 43 条里
-            //   39 条变小、2 条变大），用预案的旧长度会写出 size 错位的坏包（游戏解压截断）。
+            long blocks = pc + (totalBlocks > psEnd ? totalBlocks - psEnd : 0);
+            return (plan, blocks);
         }
+        // 注意：预案只定【块位】。loc 表（父 res 记录子里填的 offset/size）必须用
+        //   构建阶段的【真实写入长度】登记 —— 压缩条目重 gzip 后长度会变（实测 43 条里
+        //   39 条变小、2 条变大），用预案的旧长度会写出 size 错位的坏包（游戏解压截断）。
+
+        bool verbose = true;        // 重排轮不重复刷逐条 res 日志（只保留首轮）
 
         // 重建一个 res。depth==0 = 顶层 res（不写 3.temp）；depth>0 = 子 res / 内嵌 res（写 3.temp）。
         // 递归规则：list 里任何条目，只要数据本身是 Pres 且能找到它自己的 list，就现场重打包
@@ -135,7 +148,8 @@ public static class Packer
             {
                 WriteTemp(cwd, resExportPath, bytes);
                 nResPack++;
-                Console.WriteLine($"  {new string(' ', depth * 2)}· 重打包 res  {resExportPath}  →  {bytes.Length} 字节");
+                if (verbose)
+                    Console.WriteLine($"  {new string(' ', depth * 2)}· 重打包 res  {resExportPath}  →  {bytes.Length} 字节");
             }
             return bytes;
         }
@@ -160,6 +174,8 @@ public static class Packer
             // 之所以要分两阶段：GEB 里父 res 常常排在子条目【之前】（block 更小），
             //   若边扫边建，父 res 构建时子条目的真实长度还不知道，只能拿旧长度凑 —— 必错。
             var built = new Dictionary<PackageEntry, byte[]>(Math.Max(16, pkg.Entries.Count));
+            var measured = new Dictionary<PackageEntry, long>();      // 本轮实测长度（重排依据）
+            var over = new List<PackageEntry>();                      // 本轮超出预案占位的条目
 
             void BuildOne(PackageEntry e)
             {
@@ -181,12 +197,14 @@ public static class Packer
                 }
 
                 var pl = planBlock[e];
-                if (NBlk(d.Length) > pl.occupy)
-                    throw new InvalidDataException(
-                        $"顺移失败：{e.ExportPath} 实际 {NBlk(d.Length)} 块 > 预案 {pl.occupy} 块 —— "
-                      + "顺移布局按「原块数」为该条占位，要求它不变长（res 重打包跨块会让预案失效）。");
+                measured[e] = d.Length;
+                // 超出预案占位：本轮布局作废，记下来等重排（不再直接报错 —— DLC 的 0x10 块
+                //   让 res 重打包几乎必然跨块，这是常态而非异常）。
+                if (NBlk(d.Length) > pl.occupy) over.Add(e);
 
-                // ★ 用真实长度登记，而不是预案里的旧长度
+                // ★ 用真实长度登记，而不是预案里的旧长度。
+                //   即便本轮已判定溢出也要登记：父 res 构建时 locateRdp 查不到记录会直接抛异常，
+                //   那样根本走不到「重排」这一步；本轮的字节随后会被丢弃重来。
                 foreach (var r in e.Refs ?? new List<EntryRef>())
                 {
                     int gi = SlotInt(r.Group);
@@ -204,28 +222,57 @@ public static class Packer
                 return true;
             }
 
-            // ① 普通条目（无依赖）
-            foreach (var e in pkg.Entries.Where(x => !x.IsRes).OrderBy(x => x.Block))
+            // ---- 布局迭代：先按预案构建，若有 res 超出占位就用实测长度重排再来 ----
+            // 首轮 res 长度未知，只能按原块数占位；DLC 的 0x10 块让「多 1 字节」就多占一块，
+            //   所以溢出是常态。重排用的是本轮实测长度，而 res 长度与块位无关 ⇒ 第二轮即精确解。
+            const int MaxPlanTries = 5;
+            for (int attempt = 0; ; attempt++)
             {
-                BuildOne(e);
-                doneS.Add(e);
-            }
+                (planBlock, reflowBlocks) = PlanLayout(resLen);
+                if (attempt == 0)
+                    Console.WriteLine($"  预案  : {planBlock.Count} 条 → {reflowBlocks} 块（原 {totalBlocks} 块）");
+                else
+                    Console.WriteLine($"  重排  : {over.Count} 条 res 超出预案 → 按实测长度重排（第 {attempt} 次）→ {reflowBlocks} 块（原 {totalBlocks} 块）");
 
-            // ② res：引用的条目全部构建完才构建本 res
-            var pendS = pkg.Entries.Where(x => x.IsRes).OrderBy(x => x.Block).ToList();
-            while (pendS.Count > 0)
-            {
-                var next = new List<PackageEntry>();
-                foreach (var e in pendS)
+                // 每轮都必须重来：块位变了，缓存里的 res 字节（内含子条目的 offset）随之失效
+                loc.Clear(); resCache.Clear();
+                built.Clear(); doneS.Clear(); measured.Clear(); over.Clear();
+                nComp = 0; nResPack = 0; nReuse = 0; nInplace = 0; nAppend = 0;
+                verbose = attempt == 0;      // 重排轮不重复刷逐条 res 日志
+
+                // ① 普通条目（无依赖）
+                foreach (var e in pkg.Entries.Where(x => !x.IsRes).OrderBy(x => x.Block))
                 {
-                    if (!ReadyS(e)) { next.Add(e); continue; }
                     BuildOne(e);
                     doneS.Add(e);
                 }
-                if (next.Count == pendS.Count)
+
+                // ② res：引用的条目全部构建完才构建本 res
+                var pendS = pkg.Entries.Where(x => x.IsRes).OrderBy(x => x.Block).ToList();
+                while (pendS.Count > 0)
+                {
+                    var next = new List<PackageEntry>();
+                    foreach (var e in pendS)
+                    {
+                        if (!ReadyS(e)) { next.Add(e); continue; }
+                        BuildOne(e);
+                        doneS.Add(e);
+                    }
+                    if (next.Count == pendS.Count)
+                        throw new InvalidDataException(
+                            $"打包无法收敛：{next.Count} 个 res 的被引用条目始终未能构建（疑似 res 引用成环），例：{next[0].ExportPath}");
+                    pendS = next;
+                }
+
+                if (over.Count == 0) break;      // 全部落在占位内 ⇒ 布局确定，可以写盘
+
+                if (attempt + 1 >= MaxPlanTries)
                     throw new InvalidDataException(
-                        $"打包无法收敛：{next.Count} 个 res 的被引用条目始终未能构建（疑似 res 引用成环），例：{next[0].ExportPath}");
-                pendS = next;
+                        $"顺移失败：重排 {MaxPlanTries} 次后仍有 {over.Count} 条 res 超出占位（例：{over[0].ExportPath}）—— "
+                      + "通常是该 res 的 list 与数据文件不匹配，导致重打包后长度不稳定。");
+
+                // 把本轮实测长度交给下一轮预案（所有 res 都记，父 res 的长度也已含子 res 的新长度）
+                foreach (var kv in measured) resLen[kv.Key] = kv.Value;
             }
 
             if (File.Exists(outRdp)) File.Delete(outRdp);
