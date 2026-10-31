@@ -961,11 +961,17 @@ public static class Packer
             //   完全不同（索引的 rtbl 文件却仍是本体原来那个），所以绝不能从本体 list 抄。
             if (ot == Pres.TypePackage || ot == Pres.TypeData)
             {
-                // 4 / 5：数据在本体 rdp —— 只把【块号（索引）】按基准块表修正；
+                // 4 / 5：数据在本体 rdp —— 块号（索引）+ 字节数 + 解压大小【三项全按基准块表修正】。
                 //   ★ 同一块可能被多个 res 引用，块表只记【首个引用者】的 exportPath，
                 //     所以 EP 反查 miss 时按【块号】直查（DLC list 的 Offset 就是本体块号）。
-                //   ★ 压缩大小 / 解压大小一律取本 DLC res TOC 里记的值（解包时已原样记录）——
-                //     这两个数属于 update res 包自己；本体块表的值只在 list 缺字段时兜底。
+                //   ★★ 大小必须跟着块号一起换：4/5 指向的是本体 rdp 上的【那个文件】，
+                //     而 -c 重打包会重建 res（尤其 local 区体积变化），文件长度会变。
+                //     实测（PSV GE2，2026-10-31）：god_m000_Boot.res 经 -c 从 80560 涨到 231648，
+                //     块位 375700 → 375729；若 size 仍写 DLC list 里的旧值 80560，
+                //     游戏按 80560 去读一个 231648 字节的文件 → resfile.c 报
+                //     "unexpected read incomplete: path=app0:/data.rdp;769492992;80560:restsize=151083"
+                //     （151083 ≈ 231648-80560），随后整片数据错位、blockzip 解压连环失败、整包拒载。
+                //   ⇒ 基准块表有值就用基准值，list 缺字段时才退回 DLC res TOC 的旧值。
                 long? blk = null;
                 long? tblSize = null, tblDec = null;
                 // ★ 首选【本条自己记的块号】it.Offset —— 它是该条目的权威来源，且天然带语言分区信息：
@@ -997,7 +1003,7 @@ public static class Packer
                 }
                 if (blk.HasValue)
                 {
-                    ext[(lang, g, idx)] = (blk.Value, it.Size ?? tblSize ?? 0, it.DecSize ?? tblDec ?? 0);
+                    ext[(lang, g, idx)] = (blk.Value, tblSize ?? it.Size ?? 0, tblDec ?? it.DecSize ?? 0);
                     nFix45++;
                 }
                 else
